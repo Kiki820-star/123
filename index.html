@@ -1,61 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8">
-  <title>阿姨 AI 小幫手</title>
-  <style>
-    body { font-family: sans-serif; background: #f9f9f9; padding: 2rem; }
-    .chat-box { max-width: 600px; margin: auto; background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .chat-log { max-height: 300px; overflow-y: auto; margin-bottom: 1rem; }
-    .chat-log div { margin: 0.5rem 0; }
-    .user { text-align: right; color: #0a84ff; }
-    .auntie { text-align: left; color: #ff6f61; }
-    input { width: 80%; padding: 0.5rem; border-radius: 6px; border: 1px solid #ccc; }
-    button { padding: 0.5rem 1rem; border: none; background: #ff6f61; color: #fff; border-radius: 6px; cursor: pointer; }
-  </style>
-</head>
-<body>
-  <div class="chat-box">
-    <h2>我是你阿姨，有事問我～👩‍🦳</h2>
-    <div class="chat-log" id="chatLog"></div>
-    <input type="text" id="userInput" placeholder="輸入你的問題...">
-    <button onclick="sendMessage()">送出</button>
-  </div>
-
-  <script>
-    const API_KEY = "GEMINI_API_KEY"; // ← 換成你自己的 API 金鑰
-    const chatLog = document.getElementById('chatLog');
-
-    function addMessage(text, sender) {
-      const msg = document.createElement('div');
-      msg.className = sender;
-      msg.innerText = text;
-      chatLog.appendChild(msg);
-      chatLog.scrollTop = chatLog.scrollHeight;
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('userInput');
-      const userText = input.value;
-      if (!userText) return;
-
-      addMessage(userText, 'user');
-      input.value = '';
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{ text: `你是個親切又關心人的阿姨，請用阿姨的語氣回覆以下問題：「${userText}」` }]
-          }]
-        })
-      });
-
-      const data = await response.json();
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "哎呀，阿姨剛剛沒聽清楚，你再問一次好嗎？";
-      addMessage(reply, 'auntie');
-    }
-  </script>
-</body>
-</html>
+const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    contents: [{
+      parts: [{
+        text: `你是一位親切、幽默又有知識的阿姨，請用溫柔的語氣回答以下問題，不論是科技、情感、生活或學業上的事都盡量回答，問題如下：「${userText}」`
+      }]
+    }]
+  })
+});
